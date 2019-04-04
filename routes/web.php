@@ -14,3 +14,7 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/references', 'ReferencesController@index');
+Route::get('/references/{reference}', 'ReferencesController@show');
+Route::post('/references', 'ReferencesController@store');
