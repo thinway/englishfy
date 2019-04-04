@@ -34,7 +34,7 @@ class ReferencesTest extends TestCase
         $this->withoutExceptionHandling();
         $reference = factory('App\Reference')->create();
 
-        $this->get('/references/'. $reference->id)
+        $this->get($reference->path())
             ->assertSee($reference->term)
             ->assertSee($reference->type);
     }

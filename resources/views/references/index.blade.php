@@ -11,9 +11,11 @@
     <h1>New References</h1>
 
     <ul>
-        @foreach($references as $reference)
-            <li>{{ $reference['term'] }}</li>
-        @endforeach
+        @forelse($references as $reference)
+            <li><a href="{{ $reference->path() }}">{{ $reference['term'] }}</a></li>
+        @empty
+            <li>No references yet.</li>
+        @endforelse
     </ul>
 </body>
 </html>
