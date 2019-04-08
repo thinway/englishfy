@@ -7,8 +7,9 @@ $factory->define(App\Reference::class, function (Faker $faker) {
     $slug = Str::slug($term);
 
     return [
-        'term' => $term,
-        'slug' => $slug,
-        'type' => $faker->randomElement(['ID', 'PV', 'SL', 'SY'])
+        'owner_id'  => factory(App\User::class),
+        'term'      => $term,
+        'slug'      => $slug,
+        'type'      => $faker->randomElement(['ID', 'PV', 'SL', 'SY'])
     ];
 });

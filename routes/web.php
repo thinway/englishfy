@@ -17,4 +17,7 @@ Route::get('/', function () {
 
 Route::get('/references', 'ReferencesController@index');
 Route::get('/references/{reference}', 'ReferencesController@show');
-Route::post('/references', 'ReferencesController@store');
+Route::post('/references', 'ReferencesController@store')->middleware('auth');
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

@@ -22,11 +22,14 @@ class ReferencesController extends Controller
     public function store()
     {
         $attributes = request()->validate([
-            'term' => 'required',
-            'slug' => 'required',
-            'type' => 'required|in:ID,PV,SL,SY'
+            'owner_id'  => 'required',
+            'term'      => 'required',
+            'slug'      => 'required',
+            'type'      => 'required|in:ID,PV,SL,SY'
         ]);
 
+        //$attributes['owner_id'] = auth()->id();
+        auth()->user()->references()->create($attributes);
         Reference::create($attributes);
 
         return redirect('/references');

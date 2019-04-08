@@ -13,19 +13,30 @@ class ReferencesTest extends TestCase
     /** @test */
     public function a_user_can_create_a_reference()
     {
-        $attributes = [
-            'term' => 'In hot water',
-            'slug' => 'in-hot-water',
-            'type' => 'ID'
-        ];
+        $this->withoutExceptionHandling();
 
-        $response = $this->post('/references', $attributes);
+        $attributes = factory('App\Reference')->raw();
+        $user = \App\User::find($attributes['owner_id']);
+
+        $response = $this->actingAs($user)->post('/references', $attributes);
         $response->assertRedirect('/references');
 
         $this->assertDatabaseHas('references', $attributes);
         
         $response = $this->get('/references');
         $response->assertStatus(200);
+    }
+
+    /**
+     * If you are not registered in the system, you can't create new references
+     *
+     * @test
+     */
+    public function only_authenticated_users_can_create_references()
+    {
+        //$this->withoutExceptionHandling();
+        $attributes = factory('App\Reference')->raw();
+        $this->post('/references', $attributes)->assertRedirect('login');
     }
 
     /** @test */
@@ -44,7 +55,8 @@ class ReferencesTest extends TestCase
     {
         // The term is required
         $attributes = factory('App\Reference')->raw(['term' => '']);
-        $this->post('/references', $attributes)->assertSessionHasErrors('term');
+        $user = \App\User::find($attributes['owner_id']);
+        $this->actingAs($user)->post('/references', $attributes)->assertSessionHasErrors('term');
     }
 
     /** @test */
@@ -52,8 +64,8 @@ class ReferencesTest extends TestCase
     {
         // The slug is required
         $attributes = factory('App\Reference')->raw(['slug' => '']);
-
-        $this->post('/references', $attributes)->assertSessionHasErrors('slug');
+        $user = \App\User::find($attributes['owner_id']);
+        $this->actingAs($user)->post('/references', $attributes)->assertSessionHasErrors('slug');
     }
 
     /** @test */
@@ -61,10 +73,12 @@ class ReferencesTest extends TestCase
     {
         // The type is required
         $attributes = factory('App\Reference')->raw(['type' => '']);
-        $this->post('/references', $attributes)->assertSessionHasErrors('type');
+        $user = \App\User::find($attributes['owner_id']);
+        $this->actingAs($user)->post('/references', $attributes)->assertSessionHasErrors('type');
 
         // The type's right values are: ID, PV, SL, SY
         $attributes = factory('App\Reference')->raw(['type' => 'RD']);
-        $this->post('/references', $attributes)->assertSessionHasErrors('type');
+        $user = \App\User::find($attributes['owner_id']);
+        $this->actingAs($user)->post('/references', $attributes)->assertSessionHasErrors('type');
     }
 }
